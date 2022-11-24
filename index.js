@@ -3,7 +3,14 @@ import { Client, IntentsBitField, ActivityType } from "discord.js";
 import fetch from "node-fetch";
 
 const client = new Client({ intents: [IntentsBitField.Flags.Guilds] });
-client.login("su token señor");
+// CONFIG
+
+const config = {
+    token: "su token señor",
+    canal: "id del canal", //donde se va a enviar el tiempo y esas cosas que se dicen por estas fechas
+}
+
+client.login(config.token);
 
 client.on("ready", () => {
     client.user.setPresence({
@@ -11,12 +18,12 @@ client.on("ready", () => {
         status: "dnd"
     });
     console.log(`Sesión iniciada en ${client.user.tag}!`);
-    const channel = client.channels.cache.find(channel => channel.id === "1045446336314613830")
-    channel.send("Cargando tiempo...")
+    const channel = client.channels.cache.find(channel => channel.id === config.canal);
+    channel.send("Cargando tiempo...");
 });
 
 
-const eventDay = 1670621400
+const eventDay = 16706214001
 
 async function getTimeFromAPI() {
     let res
@@ -39,7 +46,7 @@ setInterval(() => {
     dNow++
     let actual = eventDay - dNow
 
-    const channel = client.channels.cache.find(channel => channel.id === "1045446336314613830")
+    const channel = client.channels.cache.find(channel => channel.id === config.canal)
     channel.messages.fetch({ limit: 1 }).then(messages => {
         const lastMessage = messages.first();
         if (lastMessage.content !== `Solo faltan **${Math.floor(actual / 86400)}** días, **${Math.floor(actual / 3600) % 24}** horas, **${Math.floor(actual / 60) % 60}** minutos y **${actual % 60}** segundos`) {
